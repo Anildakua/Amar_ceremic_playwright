@@ -4,8 +4,10 @@ import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
+import com.amar.POMclasses.addNewUserPage;
 import com.amar.constants.appConstans;
 import com.amar.utilityClasses.baseClass;
+import com.amar.utilityClasses.playwrightFactory;
 
 public class homePageTest extends baseClass {
 	
@@ -30,4 +32,13 @@ public class homePageTest extends baseClass {
 		home.dashbord().click();
 	}
 
+	@Test(priority = 2)
+	public void addNewUser() {
+		
+		home.addNewUser().click();
+		addUser.selectRoll(excel.initExcelsheet("Sheet1", 1, 5));
+		addUser.fullName(excel.initExcelsheet("Sheet1", 1, 1));
+		playwrightFactory.screanShort();
+	}
+	
 }
