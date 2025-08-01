@@ -6,6 +6,8 @@
       <class name="com.amar.TestScripts.homePageTest">
         <methods>
           <include name="afterClass"/>
+          <include name="addNewUser"/>
+          <include name="navigateToTheHomePage"/>
           <include name="beforeClass"/>
           <include name="homePageActions"/>
         </methods>

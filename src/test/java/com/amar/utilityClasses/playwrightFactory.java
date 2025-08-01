@@ -4,17 +4,19 @@ package com.amar.utilityClasses;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Properties;
 
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.BrowserType.LaunchOptions;
+import com.microsoft.playwright.Page.ScreenshotOptions;
 
 public class playwrightFactory {
 	
 	Playwright playwright;
 	Browser browser;
 	BrowserContext browserContext;
-	Page page;
+	static Page page;
 	Properties prop;
 	
 	public Page initBrowser(String browserName) {
@@ -73,5 +75,26 @@ public class playwrightFactory {
 		
 		return prop;
 	}
-
+	
+	
+	/*
+	 *  takes screanshot method 
+	 */
+	
+	public static String screanShort() {
+		
+		String path=System.getProperty("./screanShots/"+System.currentTimeMillis()+".png");
+		try {
+			page.screenshot(new ScreenshotOptions()
+					.setPath(Path.of(path))
+					.setFullPage(true));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return path;
+	}
 }
+	
+  
+
