@@ -19,40 +19,69 @@ public class playwrightFactory {
 	static Page page;
 	Properties prop;
 	
+	private static ThreadLocal<Browser> tlbrowser=new ThreadLocal<>();
+	private static ThreadLocal<BrowserContext> tlbrowserContext=new ThreadLocal<>();
+	private static ThreadLocal<Playwright> tlplaywright=new ThreadLocal<>();
+	private static ThreadLocal<Page> tlpage=new ThreadLocal<>();
+	
+	public static  Playwright getPlaywright() {
+		return tlplaywright.get();
+	}
+	
+	public static  Browser getBrowser() {
+		return tlbrowser.get();
+	}
+	
+	public static  BrowserContext getBrowserContext() {
+		return tlbrowserContext.get();
+	}
+	
+	public static  Page getPage() {
+		return tlpage.get();
+	}
+	
 	public Page initBrowser(String browserName) {
 		
+		// To get the browser run mode
 		String headLessMode=prop.getProperty("head_less_mode");
 		boolean value = Boolean.parseBoolean(headLessMode);
 		
 		System.out.println("Browser name : "+browserName);
 
-		playwright=Playwright.create();
+		//playwright=Playwright.create();
+		tlplaywright.set(Playwright.create());
 		
 		switch (browserName.toLowerCase()) {
 		case "chromium":
-			browser = playwright.chromium().launch(new LaunchOptions().setHeadless(value));
+			//browser = playwright.chromium().launch(new LaunchOptions().setHeadless(value));
+			tlbrowser.set( getPlaywright().chromium().launch(new LaunchOptions().setHeadless(value)));
 			break;
 		case "edge":
-			browser = playwright.chromium().launch(new LaunchOptions().setChannel("msedge").setHeadless(value));
+			//browser = playwright.chromium().launch(new LaunchOptions().setChannel("msedge").setHeadless(value));
+			tlbrowser.set(getPlaywright().chromium().launch(new LaunchOptions().setChannel("msedge").setHeadless(value)));
 			break;
 		case "chrome":
-			browser = playwright.chromium().launch(new LaunchOptions().setChannel("chrome").setHeadless(value));
+			//browser = playwright.chromium().launch(new LaunchOptions().setChannel("chrome").setHeadless(value));
+			tlbrowser.set(getPlaywright().chromium().launch(new LaunchOptions().setChannel("chrome").setHeadless(value)));
 			break;
 		case "firefox":
-			browser = playwright.firefox().launch(new LaunchOptions().setHeadless(false));
+			//browser = playwright.firefox().launch(new LaunchOptions().setHeadless(false));
+			tlbrowser.set(getPlaywright().firefox().launch(new LaunchOptions().setHeadless(value)));
 			break;
 		case "safari":
-			browser = playwright.webkit().launch(new LaunchOptions().setHeadless(false));
+			//browser = playwright.webkit().launch(new LaunchOptions().setHeadless(false));
+			tlbrowser.set(getPlaywright().webkit().launch(new LaunchOptions().setHeadless(false)));
 			break;
 		default:
 			System.out.println("....please enter currect browser name.....");
 			break;
 		}
 		
-		browserContext = browser.newContext();
-		page=browserContext.newPage();
-		
-		return page;
+		//browserContext = browser.newContext();
+		tlbrowserContext.set(getBrowser().newContext());
+		//page=browserContext.newPage();
+		tlpage.set(getBrowserContext().newPage());
+		return getPage();
 	}
 	
 	/*
@@ -81,11 +110,10 @@ public class playwrightFactory {
 	 *  takes screanshot method 
 	 */
 	
-	public static String screanShort() {
+	public static String screanShort(String path) {
 		
-		String path=System.getProperty("./screanShots/"+System.currentTimeMillis()+".png");
 		try {
-			page.screenshot(new ScreenshotOptions()
+			getPage().screenshot(new ScreenshotOptions()
 					.setPath(Path.of(path))
 					.setFullPage(true));
 		} catch (Exception e) {
@@ -94,6 +122,7 @@ public class playwrightFactory {
 		}
 		return path;
 	}
+
 }
 	
   
